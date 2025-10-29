@@ -1,0 +1,183 @@
+# Class Diagram Sederhana (Versi Bergaya & Berwarna) — Aplikasi Musik UKM Band Tel-U
+
+Berikut versi **berwarna dan bergaya penuh** dari class diagram, menggunakan pewarnaan kategori, font tebal, garis hubungan bergaya, serta layout horizontal agar tampilan profesional dan mudah dibaca.
+
+---
+
+```plantuml
+@startuml
+' === Pengaturan Tampilan Umum ===
+skinparam backgroundColor #FAFAFA
+skinparam classAttributeIconSize 0
+skinparam shadowing true
+skinparam dpi 150
+skinparam ArrowColor #616161
+skinparam classFontColor #212121
+skinparam classFontStyle bold
+skinparam classBackgroundColor #FFFFFF
+skinparam stereotypeFontColor #424242
+skinparam stereotypeFontStyle italic
+left to right direction
+
+<style>
+.class {
+  BackgroundColor white;
+  BorderColor #424242;
+  FontColor #1a1a1a;
+  FontSize 13;
+  FontStyle bold;
+}
+.interface {
+  BackgroundColor #E3F2FD;
+  BorderColor #1565C0;
+  FontColor #0D47A1;
+  FontStyle italic;
+}
+.abstract {
+  BackgroundColor #FFF3E0;
+  BorderColor #EF6C00;
+  FontColor #E65100;
+}
+.controller {
+  BackgroundColor #FCE4EC;
+  BorderColor #AD1457;
+  FontColor #880E4F;
+}
+.feature {
+  BackgroundColor #E8F5E9;
+  BorderColor #2E7D32;
+  FontColor #1B5E20;
+}
+.note {
+  BackgroundColor #FFF59D;
+  BorderColor #FBC02D;
+  FontColor #4E342E;
+  FontSize 12;
+}
+</style>
+
+' === Abstract dan Interface ===
+abstract class Account <<abstract>> #FFF3E0 {
+  - username : String
+  - email : String
+  - password : String
+  + login() : boolean
+  + logout() : void
+}
+
+interface IPlayable <<interface>> #E3F2FD {
+  + play()
+  + pause()
+  + stop()
+}
+
+interface ISearchable <<interface>> #E3F2FD {
+  + search(query : String)
+}
+
+note right of Account #FFF59D
+<b>Abstract Class</b> — digunakan sebagai cetakan umum<br>untuk <i>User</i> dan <i>Admin</i>.
+end note
+
+' === Kelas Utama ===
+class User <<feature>> #E8F5E9 {
+  - displayName : String
+  + likeSong(s : Song)
+  + commentSong(s : Song, text : String)
+}
+
+class Admin <<controller>> #FCE4EC {
+  + manageSong(s : Song)
+  + moderateComment(c : Comment)
+}
+
+class Song <<feature>> #E8F5E9 {
+  - title : String
+  - duration : int
+  - playCount : int
+  + play()
+}
+
+class Artist <<feature>> #E8F5E9 {
+  - name : String
+}
+
+class Album <<feature>> #E8F5E9 {
+  - title : String
+}
+
+class Playlist <<feature>> #E8F5E9 {
+  - name : String
+  + addSong(s : Song)
+  + removeSong(s : Song)
+}
+
+class Feedback <<feature>> #E8F5E9 {
+  - message : String
+  + submit()
+}
+
+class Comment <<feature>> #E8F5E9 {
+  - content : String
+}
+
+class Like <<feature>> #E8F5E9 {
+  - likedAt : Date
+}
+
+class History <<feature>> #E8F5E9 {
+  + addRecord(s : Song)
+  + getRecent()
+}
+
+class Statistics <<controller>> #FCE4EC {
+  + getTopSongs()
+}
+
+class MusicPlayer <<controller>> #FCE4EC {
+  + play()
+  + pause()
+  + stop()
+}
+
+class SearchService <<controller>> #FCE4EC {
+  + search(query : String)
+}
+
+' === Relasi Bergaya ===
+Account <|-- User : <b><color:#EF6C00>inheritance</color></b>
+Account <|-- Admin : <b><color:#EF6C00>inheritance</color></b>
+User "1" -- "*" Playlist : <color:#2E7D32>owns</color>
+Playlist "*" -- "*" Song : <color:#2E7D32>contains</color>
+Song "*" -- "1" Artist : <color:#0277BD>created by</color>
+Album "1" o-- "*" Song : <color:#00695C>includes</color>
+User "1" -- "*" Like : <color:#7B1FA2>likes</color>
+User "1" -- "*" Comment : <color:#7B1FA2>writes</color>
+Song "1" -- "*" Comment : <color:#7B1FA2>has</color>
+User "1" -- "*" Feedback : <color:#F57F17>gives</color>
+User "1" -- "*" History : <color:#0288D1>plays</color>
+SearchService ..|> ISearchable : <color:#0D47A1>implements</color>
+MusicPlayer ..|> IPlayable : <color:#0D47A1>implements</color>
+Statistics --> Song : <color:#BF360C>analyzes</color>
+
+note as N1 #FFF59D
+<b>Layout Horizontal</b> — diagram dibaca dari kiri ke kanan.<br>
+Warna hijau = fitur, merah muda = controller, oranye = abstract, biru = interface.
+end note
+
+@enduml
+```
+
+---
+
+### ✨ Penjelasan Styling
+
+* **Pewarnaan:** setiap kategori class memiliki warna berbeda (`feature`, `controller`, `abstract`, `interface`).
+* **Garis berwarna & teks rich:** hubungan antar kelas diberi label berwarna dan tebal menggunakan `<b><color>`.
+* **Stereotype kustom:** `<<feature>>`, `<<controller>>`, `<<abstract>>`, `<<interface>>` dengan gaya tersendiri.
+* **Catatan berwarna:** memberi konteks (contohnya pada `Account` dan di bagian bawah diagram).
+* **Layout horizontal:** menggunakan `left to right direction` agar tampilan lebar dan mudah dibaca.
+
+Diagram ini siap digunakan untuk tampilan PDF yang rapi dan profesional.
+link :
+https://uml.planttext.com/plantuml/svg/bLVRRjj647qNe7zOE0zr6bz4NUrK9g8BYHXDWo2AqUSbEQQs9dULvTAgt1JeH_GB-oMTNLv4aP9icu11xkxCcSkPsT67H56fqZXgjtuYDpStv0lmaAfKKaw-qNZ58dovYzDORxPRoGFZAoffJ3pgFuHIf3oOYKX8yiQTwATwn8zeaaoKainB5TpwWY_O4v1EzKoof85OCnuI9LEexWGhHgp1pk69b6ATmmqj_JJWNC5LVg9hwMVlYONQH40y4GMDxMd3B_EtOxC22K9jLb11wtVrS_XO1iaKZPZVRaLmhuWIHB9mgKZ09FYA2TvkjLlZH9-qswqBOm_vgzqYf6xLUiaK_69sX0n0xXXXrYkcMLG_vQf9WjNRVfV1mAM_4PTnjFoU-h0V-utJSxlkl8bk3OQ3MQUEtfdtHnEhXfR58SUZNg8azTK1E8n-p-aquHntEEiqu9pXm3AhMZDIJaaHHI0FwPuvVMVMr3sPM_t1gAxxwghZzDrSzpteCZaOeojtu5mt5NUTqRpNpD1qu7GBexbGXxHYA0RNUoBlJcUTxhokjU_q-bsdblTkXZA-B6XM5Fwao4A05NzRKi2KVPcXZ98JtqUZ51cFYmtRBlAKMNvEqWGafp6GzsI17O27sJB4b4MrjHNgNACxEyllI2H2na_VugedH0IKbyiYLMRzKR30UDDkRJbx-oMY6-eXoSRZSbNRbz4si-yTMU6fqxVvEqLhYuz4YPL-hwjT09N-ydd5YJbt-Zq5kIazAlIPt6P5B-xBEEPvnQnuTfc6cGxr-DApoN___8ij8amvVS3K9E3Ha3BYWpBVAJRdiITjL9G-a36pxp3ouqjccqJYzoI86TSB5-qMy81e6xPf_nKGXzmf6jCirrcAjHBqCoUvyT8mkaXlm18TmS_r36D-s0Ci10zF4xqXZEzwtHTn3CZ2wjOPKV2dQaGfPvcs6stO5h5XcQdO8jWnvJJS2nSBB0-gO9R1dlgudR_lmcYPOvugfg8wYmEy7tM_ncLaGivY3CVCfBDStBAiwfPKB57746jbKvMDFBo9Ns5iHLQNHVGwPEq13O9zuPKGYyT6u2jmBa2WPuHZS34a2QQlXfYaNinKBMfvwevfqpm1hlPx_mbPUKnOipQOQE4vrULH4Vs8GHDOomUbJP2-Weyjh1wc41HkQFxLIAUePW7pasS8ZWg-YPNMcDHK_9OcpDT9DOLwJCVBMbrkcEbU2v2Fp8Tdz1xjT5bt-Qgx2oDJa24svQp1bBV7Z_FphC-y9zZu40flhVVvjMuplWI9OmBtONnfjcpT36lYMOzubRn1FB5E28gV_7oohGlKagl8BcbRh7bIoBPRvJajbCkQtj6Gqp6Zh2fhpXLo29ttWArafpiQJUUsBv5X411livNDQbvBYVsedSxmUZ13X_qe3Q22MlVKrC1MRZIrt4dNrim_8bGKNaDkZT65Xeyl45pI8t1bszYAkOEHQutia3qUixEeqcfChwxcbgtPNpLpX-0N5p_idQkz8cxcLfl5gmYq8nKTrTBBD9GpnulaAzL_VcxNypbrUyFEpCQRBTeyLLtEnmUyhZzREpF39xh1aOXy598zQUv5bR61XkR75CEWKfm892CFJFy3WiC3vHTwT6YtVgSuh94b-uEcv8RSCsnpPzYU9LsIE0smSCcs4PmHWRyEDpWQacByEoCUargod8jgiyO7_C0VcVy3
