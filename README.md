@@ -26,30 +26,34 @@ Untuk menjalankan proyek ini secara lokal, ikuti langkah-langkah berikut:
    ```bash
    git clone https://github.com/Ashlxxy/Tubes-Kelompok2-WebProPBO.git
 
-Penggunaan API
+## Penggunaan API
+
 Berikut adalah beberapa contoh endpoint yang tersedia:
 
-Get All Songs
+### 1. Get All Songs
+- **Endpoint**: `/api/songs`
+- **Method**: `GET`
 
-Endpoint: /api/songs
-Method: GET
-Search Songs
+### 2. Search Songs
+- **Endpoint**: `/api/songs/search?query={query}`
+- **Method**: `GET`
 
-Endpoint: /api/songs/search?query={query}
-Method: GET
-Get Artist Info
+### 3. Get Artist Info
+- **Endpoint**: `/api/artists/{id}`
+- **Method**: `GET`
 
-Endpoint: /api/artists/{id}
-Method: GET
-Kontribusi
+## Kontribusi
+
 Kami menyambut baik kontribusi dari komunitas. Jika Anda ingin berkontribusi, silakan lakukan fork repositori ini, buat cabang baru, dan kirim pull request dengan perubahan Anda.
 
-Lisensi
-Proyek ini dilisensikan di bawah MIT License.
+## Lisensi
 
-Kontak
+Proyek ini dilisensikan di bawah [MIT License](LICENSE).
+
+## Kontak
+
 Untuk pertanyaan atau informasi lebih lanjut, silakan hubungi:
+- **Nama**: Rizki Nata Wirawan
+- **Email**: [rizkinataw@gmail.com](mailto:rizkinataw@gmail.com)
 
-Nama: Rizki Nata Wirawan
-Email: rizkinataw@gmail.com
 Terima kasih telah mengunjungi proyek kami!
