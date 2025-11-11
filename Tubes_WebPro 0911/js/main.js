@@ -315,15 +315,24 @@ function filterSongs(q){
   return songs.filter(s=>s.title.toLowerCase().includes(L)||s.desc.toLowerCase().includes(L)||s.artist.toLowerCase().includes(L));
 }
 
-function showSearchResultsBar(q,list){
-  const bar=document.getElementById('searchResultsBar');
-  const grid=document.getElementById('searchResultsGrid');
-  const label=document.getElementById('searchQueryText');
-  if(!bar||!grid||!label) return;
-  label.textContent=q?`“${q}” (${list.length} hasil)`:''; 
-  grid.innerHTML=list.map(songCardTemplate).join('');
-  bar.classList.toggle('d-none',!q);
+function showSearchResultsBar(q, list) {
+  const bar = document.getElementById('searchResultsBar');
+  const grid = document.getElementById('searchResultsGrid');
+  const label = document.getElementById('searchQueryText');
+
+  if (!bar || !grid || !label) return;
+
+  label.textContent = q ? `“${q}” (${list.length} hasil)` : '';
+
+  if (list.length === 0) {
+    grid.innerHTML = `<div class="text-dark-300 py-3">Tidak ada hasil untuk “${q}”.</div>`;
+  } else {
+    grid.innerHTML = list.map(songCardTemplate).join('');
+  }
+
+  bar.classList.toggle('d-none', !q);
 }
+
 
 function initHome(){
   const p=location.pathname.split('/').pop();
@@ -361,23 +370,76 @@ function initHome(){
 }
 document.addEventListener('DOMContentLoaded',initHome);
 
-function initSongsPage(){
-  const p=location.pathname.split('/').pop(); if(p!=='songs.html') return;
-  const songs=load('songs',[]); renderSongGrid('songList',songs);
-  const q=new URL(window.location.href).searchParams.get('q')||'';
-  if(q){ const list=filterSongs(q); showSearchResultsBar(q,list); renderSongGrid('songList',list); const input=document.getElementById('globalSearch'); if(input) input.value=q; }
+function initSongsPage() {
+  const p = location.pathname.split('/').pop();
+  if (p !== 'songs.html') return;
+
+  const songs = load('songs', []);
+  const q = new URL(window.location.href).searchParams.get('q') || '';
+
+  const songList = document.getElementById('songList');
+  const searchBar = document.getElementById('searchResultsBar');
+  const title = document.querySelector('main h3');
+
+  if (q) {
+    // Kalau user sedang melakukan pencarian
+    const list = filterSongs(q);
+    showSearchResultsBar(q, list);
+
+    // 🔴 Jangan renderSongGrid() lagi di bawah biar gak double
+    if (songList) songList.innerHTML = ''; // Kosongin daftar "Semua Lagu"
+    if (title) title.style.display = 'none'; // Sembunyikan judul
+  } else {
+    // Kalau tidak sedang mencari
+    if (searchBar) searchBar.classList.add('d-none');
+    renderSongGrid('songList', songs);
+    if (title) title.style.display = 'block';
+  }
 }
-document.addEventListener('DOMContentLoaded',initSongsPage);
+document.addEventListener('DOMContentLoaded', initSongsPage);
+
+
 
 function renderAdmin(){ /* kept empty on purpose */ }
 
-function handleGlobalSearch(e){
+function handleGlobalSearch(e) {
   e.preventDefault();
-  const q=(document.getElementById('globalSearch')?.value||'').trim();
-  if(!q){ showSearchResultsBar('',[]); return false; }
-  const p=location.pathname.split('/').pop();
-  if(p==='songs.html'){ const list=filterSongs(q); showSearchResultsBar(q,list); renderSongGrid('songList',list); }
-  else{ window.location.href='songs.html?q='+encodeURIComponent(q); }
+  const q = (document.getElementById('globalSearch')?.value || '').trim();
+  const p = location.pathname.split('/').pop();
+
+  // kalau kolom pencarian dikosongkan lalu di-enter
+  if (!q) {
+    const searchBar = document.getElementById('searchResultsBar');
+    const songList = document.getElementById('songList');
+    const title = document.querySelector('main h3');
+    const songs = load('songs', []);
+
+    if (p === 'songs.html') {
+      if (searchBar) searchBar.classList.add('d-none');
+      if (title) title.style.display = 'block';
+      renderSongGrid('songList', songs);
+    } else {
+      window.location.href = 'songs.html';
+    }
+    return false;
+  }
+
+  // kalau user sedang di halaman daftar lagu
+  if (p === 'songs.html') {
+    const songList = document.getElementById('songList');
+    const title = document.querySelector('main h3');
+
+    // Bersihkan semua lagu lama sebelum render ulang hasil baru
+    if (songList) songList.innerHTML = '';
+    if (title) title.style.display = 'none';
+
+    const list = filterSongs(q);
+    showSearchResultsBar(q, list);
+  } else {
+    // kalau pencarian dilakukan dari halaman lain
+    window.location.href = 'songs.html?q=' + encodeURIComponent(q);
+  }
+
   return false;
 }
 
