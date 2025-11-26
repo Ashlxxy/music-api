@@ -34,13 +34,60 @@ function register(e){
 function logout(){localStorage.removeItem('auth_user');window.location.href="login.html";}
 
 const defaultSongs=[
-  {id:'s1',title:"Lust",artist:"Bachelor's Thrill",desc:"Energi eksplosif dan riff cepat yang menggambarkan kebebasan mahasiswa.",cover:"assets/img/c1.jpg",file:"assets/songs/Lust.wav",plays:0,likes:0,likedBy:[],comments:[]},
-  {id:'s2',title:"Form",artist:"Coral",desc:"Eksperimen suara yang menggambarkan bentuk dan warna bawah laut.",cover:"assets/img/c2.jpg",file:"assets/songs/coral_form.wav",plays:0,likes:0,likedBy:[],comments:[]},
-  {id:'s3',title:"Strangled",artist:"Dystopia",desc:"Nuansa gelap yang menggambarkan kekacauan batin dan tekanan sosial.",cover:"assets/img/c3.jpg",file:"assets/songs/Strangled.wav",plays:0,likes:0,likedBy:[],comments:[]},
-  {id:'s4',title:"Revoir",artist:"Elisya_au",desc:"Balada melankolis tentang perpisahan dan kenangan yang tak terlupakan.",cover:"assets/img/c4.jpg",file:"assets/songs/revoir.wav",plays:0,likes:0,likedBy:[],comments:[]},
-  {id:'s5',title:"Prisoner",artist:"Secrets.",desc:"Karya eksperimental dengan pesan tentang kebebasan dan rahasia terdalam.",cover:"assets/img/c5.jpg",file:"assets/songs/Prisoner.wav",plays:0,likes:0,likedBy:[],comments:[]},
-  {id:'s6',title:"Langit Kelabu",artist:"The Harper",desc:"Harmoni lembut dengan lirik puitis tentang hujan dan harapan.",cover:"assets/img/c6.jpg",file:"assets/songs/Langit Kelabu.wav",plays:0,likes:0,likedBy:[],comments:[]},
-  {id:'s7',title:"The Overtrain - New World",artist:"The Overtrain",desc:"Irama cepat dengan semangat membangun dunia baru yang lebih baik.",cover:"assets/img/c7.jpg",file:"assets/songs/NewWorld.wav",plays:0,likes:0,likedBy:[],comments:[]},
+  {
+    id:'s1',
+    title:"Lust",
+    artist:"Bachelor's Thrill",
+    desc:"Energi eksplosif dan riff cepat yang menggambarkan kebebasan mahasiswa.",
+    cover:"assets/img/c1.jpg",
+    file:"assets/songs/Lust.wav",
+    plays:0,likes:0,likedBy:[],comments:[]
+  },
+  {
+    id:'s2',
+    title:"Form",
+    artist:"Coral",
+    desc:"Eksperimen suara yang menggambarkan bentuk dan warna bawah laut.",
+    cover:"assets/img/c2.jpg",
+    file:"assets/songs/coral_form.wav",
+    plays:0,likes:0,likedBy:[],comments:[]
+  },
+  {
+    id:'s3',
+    title:"Strangled",
+    artist:"Dystopia",
+    desc:"Nuansa gelap yang menggambarkan kekacauan batin dan tekanan sosial.",
+    cover:"assets/img/c3.jpg",
+    file:"assets/songs/Strangled.wav",
+    plays:0,likes:0,likedBy:[],comments:[]
+  },
+  {
+    id:'s4',
+    title:"Revoir",
+    artist:"Elisya_au",
+    desc:"Balada melankolis tentang perpisahan dan kenangan yang tak terlupakan.",
+    cover:"assets/img/c4.jpg",
+    file:"assets/songs/revoir.wav",
+    plays:0,likes:0,likedBy:[],comments:[]
+  },
+  {
+    id:'s5',
+    title:"Prisoner",
+    artist:"Secrets.",
+    desc:"Karya eksperimental dengan pesan tentang kebebasan dan rahasia terdalam.",
+    cover:"assets/img/c5.jpg",
+    file:"assets/songs/Prisoner.wav",
+    plays:0,likes:0,likedBy:[],comments:[]
+  },
+  {
+    id:'s6',
+    title:"The Overtrain - New World",
+    artist:"The Overtrain",
+    desc:"Irama cepat dengan semangat membangun dunia baru yang lebih baik.",
+    cover:"assets/img/c7.jpg",
+    file:"assets/songs/NewWorld.wav",
+    plays:0,likes:0,likedBy:[],comments:[]
+  },
 ];
 
 function ensureSeed(){
@@ -350,20 +397,30 @@ function initHome(){
 
   const bookletEl=document.getElementById('bookletCards');
   if(bookletEl){
-    bookletEl.innerHTML=songs.map(s=>`
-      <div class="col-md-6 col-lg-4">
-        <div class="card song p-3 h-100">
-          <div class="d-flex align-items-start gap-3">
-            <img src="${s.cover}" width="96" height="96" class="rounded-3 object-fit-cover" alt="${s.title}">
-            <div class="flex-fill">
-              <div class="fw-semibold">${s.title}</div>
-              <div class="small text-dark-300 mb-2">${s.artist}</div>
-              <p class="small text-dark-200 mb-0">${s.desc}</p>
-            </div>
+  bookletEl.innerHTML = songs.map(s => `
+    <div class="col-md-6 col-lg-4">
+      <div class="card song p-3 h-100 rounded-3">
+
+        <div class="d-flex align-items-start gap-3">
+          <img src="${s.cover}" width="96" height="96"
+               class="rounded-3 object-fit-cover" alt="${s.title}">
+
+          <div class="flex-fill">
+            <div class="booklet-title">${s.title}</div>
+            <div class="booklet-artist">${s.artist}</div>
+            <p class="booklet-desc">${s.desc}</p>
+
+            <a href="song-detail.html?id=${s.id}" class="booklet-listen-btn">
+              <i class="bi bi-headphones me-1"></i> Dengarkan
+            </a>
           </div>
         </div>
-      </div>`).join('');
-  }
+
+      </div>
+    </div>
+  `).join('');
+}
+
 
   const urlQ=new URL(window.location.href).hash.startsWith('#q=')?decodeURIComponent(location.hash.slice(3)):'';
   if(urlQ){ const list=filterSongs(urlQ); showSearchResultsBar(urlQ,list); }
@@ -449,4 +506,45 @@ window.addEventListener('load',()=>{
     const q=hash.slice(3);
     if(location.pathname.endsWith('index.html')||location.pathname.endsWith('/')){ const list=filterSongs(q); showSearchResultsBar(q,list); }
   }
+});
+
+function renderFeaturedSong() {
+  const songs = load("songs", []);
+  if (!songs.length) return;
+
+  const newest = songs[songs.length - 1];
+
+  document.getElementById("featuredSong").innerHTML = `
+    <div class="featured-song-card" onclick="location.href='song-detail.html?id=${newest.id}'">
+      <img src="${newest.cover}" class="featured-song-cover">
+
+      <div>
+        <h4 class="fw-bold">${newest.title}</h4>
+        <div class="text-dark-200 small mb-2">${newest.artist}</div>
+        <p class="text-dark-300 mb-0">${newest.desc}</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderPopularList() {
+  const songs = load("songs", []);
+  if (!songs.length) return;
+
+  const sorted = [...songs].sort((a,b) => (b.likes + b.plays) - (a.likes + a.plays));
+  const top3 = sorted.slice(0,3);
+
+  document.getElementById("popularList").innerHTML = top3
+    .map((song, i) => `
+      <div class="item" onclick="location.href='song-detail.html?id=${song.id}'">
+        <strong>${i+1}. ${song.title}</strong>
+        <div class="text-dark-300 small">${song.artist}</div>
+      </div>
+    `)
+    .join("");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderFeaturedSong();
+  renderPopularList();
 });
